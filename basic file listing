@@ -1,0 +1,40 @@
+#-*- coding=utf-8 -*-
+from datetime import datetime
+import os
+import time
+import sys
+start_time=time.time() #시간 체크
+
+#디렉토리 정하기
+def choosedirectory():
+    dirname = raw_input('directory name?')
+    return dirname
+
+#디렉토리 내부 파일 검색 #파일 리스트 뽑기 #방법1: 한 path로 쭉 파고 내려간 다음에 다시 올라와서 체크
+def dirsearch1(dirname, filecheckf):
+    flists = os.listdir(dirname)
+    for i in flists:
+        nextf = os.path.join(dirname, i)
+        filecheckf.write(nextf+"\n")
+        if os.path.isdir(nextf):
+            dirsearch1(nextf, filecheckf)
+
+#방법2: os.walk로 해보기.
+def dirsearch2(dirname, filecheckf):
+    for (path, dir, files) in os.walk(dirname):
+        for file in files:
+            a=os.path.join(path, file)
+            filecheckf.write(a+"\n")
+
+#파일 만들기 #파일 리스트 파일 이름은 날짜별로 #파일리스트 만들기
+def main():
+    now = str(datetime.now())[:10]
+    filecheckf=open("%s"% now +'.txt','w')
+    dirname = choosedirectory()
+    dirsearch1(dirname, filecheckf)
+    filecheckf.close()
+#저번주와 이번주 파일의 차이점 찾아내기
+#수작업
+
+main()
+print("%s seconds")%str(time.time()-start_time)
